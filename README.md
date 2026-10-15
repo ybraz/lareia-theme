@@ -58,4 +58,4 @@ Requires Obsidian 1.13.0 or newer. Not affiliated with Obsidian.
 
 - Theme: MIT — see [LICENSE](LICENSE).
 - Literata, embedded in `theme.css`: Copyright 2017 The Literata Project Authors,
-  SIL Open Font License 1.1 — see [OFL.txt](OFL.txt).
+  SIL Open Font License 1.1 — see [OFL.txt](OFL.txt). The font is not covered by the MIT license.
