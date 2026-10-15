@@ -1,0 +1,42 @@
+# A release do tema, montada e certificada pelo GitHub.
+#
+# Toda tag empurrada (a versão do manifest.json, ex.: 1.0.0) publica a release
+# com o theme.css e o manifest.json, e o theme.css sai com um *artifact
+# attestation*: a prova assinada de que veio deste repositório, por este
+# workflow — quem baixa confere com `gh attestation verify`.
+#
+# Lareia — https://lareia.app/obsidian
+name: Release
+
+on:
+  push:
+    tags: ["*"]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: A tag é a versão do manifest.json
+        run: |
+          versao="$(node -p 'require("./manifest.json").version')"
+          if [ "$versao" != "$GITHUB_REF_NAME" ]; then
+            echo "a tag ($GITHUB_REF_NAME) não é a versão do manifest.json ($versao)" >&2
+            exit 1
+          fi
+
+      - name: Certificar o theme.css
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: theme.css
+
+      - name: Publicar a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes theme.css manifest.json
